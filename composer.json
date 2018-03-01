@@ -5,7 +5,7 @@
     "homepage": "https://github.com/10up/wp-hammer",
     "require": {
         "joshtronic/php-loremipsum": "dev-master",
-        "roderik/pwgen-php": "dev-master",
+        "roderik/pwgen-php": "0.1.7",
         "heidilabs/markov-php": "dev-master"
     },
     "autoload": {
