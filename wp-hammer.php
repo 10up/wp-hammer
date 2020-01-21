@@ -3,7 +3,7 @@
  * Plugin Name: wp hammer
  * Plugin URI: https://github.com/10up/wp-hammer
  * Description: This plugin adds a wp-cli ha command to clean your environment and prepare it for staging / development by removing Personally Identifiable Information.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: Ivan Kruchkoff
  * License: MIT
  * License URI: https://opensource.org/licenses/MIT
