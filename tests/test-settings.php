@@ -15,9 +15,10 @@ class SettingsTest extends WP_HammerTestCase {
      * Check Formatters
      */
     public function testFormats() {
-        $this->assertEquals( 4, count( $this->settings->formats ), 'Valid Format Count' );
+        $this->assertEquals( 5, count( $this->settings->formats ), 'Valid Format Count' );
         $this->assertEquals( 'posts.post_author=auto', $this->settings->formats[0], 'Valid table.column=type parse');
         $this->assertEquals( 'users.user_email=ivan+__ID__@kruchkoff.com', $this->settings->formats[2], 'Valid users.user_email=email@format parse' );
+        $this->assertEquals( 'comments.comment_author_email=ivan+__comment_ID__@kruchkoff.com', $this->settings->formats[4], 'Valid comments.comment_author_email=email@format parse' );
     }
 
     /**

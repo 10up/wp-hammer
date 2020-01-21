@@ -58,11 +58,25 @@ class WP_HammerTestCase extends WP_UnitTestCase {
 
 		$this->author1_page2 = wp_insert_post( $page );
 
+		$comment = array(
+			'comment_post_ID'      => $this->author1_post1,
+			'comment_author_email' => 'commenter_1@example.org',
+		);
+
+		$this->comment_1 = $this->factory()->comment->create( $comment );
+
+		$comment = array(
+			'comment_post_ID'      => $this->author1_post2,
+			'comment_author_email' => 'commenter_2@example.org',
+		);
+
+		$this->comment_2 = $this->factory()->comment->create( $comment );
+
 		$args = array(
 				"-l",
 				"users=5,posts=100.post_date",
 				"-f",
-				"posts.post_author=auto,users.user_pass=auto,users.user_email=ivan+__ID__@kruchkoff.com,posts.post_title=ipsum",
+				"posts.post_author=auto,users.user_pass=auto,users.user_email=ivan+__ID__@kruchkoff.com,posts.post_title=ipsum,comments.comment_author_email=ivan+__comment_ID__@kruchkoff.com",
 		);
 		$assoc_args = array();
 		$this->settings = new WP_CLI\Hammer\Settings();
