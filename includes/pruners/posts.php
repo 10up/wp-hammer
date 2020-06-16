@@ -4,16 +4,18 @@ namespace WP_CLI\Hammer\Pruners\Posts;
 use WP_CLI\Iterators\Query;
 
 /**
- * @param            $prune      How many posts to keep
- * @param bool|false $sort_type  How to determine which posts to keep
+ * @param            $prune               How many posts to keep
+ * @param bool|false $sort_type           How to determine which posts to keep
+ * @param            $post_type_to_prune  Post type to prune
  */
-function pruner( $limit, $sort_type = false ) {
+function pruner( $limit, $sort_type = false, $post_type_to_prune = null ) {
 	global $wpdb;
 	$post_ids_by_type = array();
 	$post_ids = array();
 	\WP_CLI::line( "Fetching all posts, we will only keep $limit of them. This could take a while." );
 	$sort_column = is_null( $sort_type ) || false === $sort_type ? 'post_modified' : preg_replace( '/[^A-Za-z0-9_]/', '', $sort_type ); // Alpha-numeric sort type to prevent injections.
-	$posts_query = apply_filters( 'wp_hammer_prune_posts_query', "SELECT ID,post_type,post_parent FROM {$wpdb->prefix}posts order by $sort_column DESC" );
+	$post_type_query = is_null( $post_type_to_prune ) ? "" : " WHERE post_type = '" . sanitize_key( $post_type_to_prune ) . "' ";
+	$posts_query = apply_filters( 'wp_hammer_prune_posts_query', "SELECT ID,post_type,post_parent FROM {$wpdb->prefix}posts" . $post_type_query . " order by $sort_column DESC" );
 	$post_parent_relationships = array();
 	$posts = new Query( $posts_query );
 	$total_posts = 0;
@@ -68,7 +70,7 @@ function pruner( $limit, $sort_type = false ) {
 	\WP_CLI::line( "Deleting " . ( max( $total_posts - $limit, 0 ) ) . " posts" );
 	$post_ids_to_delete = array_diff( $post_ids, $keep_ids );
 	if ( 'query' === apply_filters( 'wp_hammer_prune_post_types_delete_method ', 'query' ) ) {
-		$deleted_posts_count = delete_posts_sql( $post_ids_to_delete, $keep_ids );
+		$deleted_posts_count = delete_posts_sql( $post_ids_to_delete, $keep_ids, $post_type_to_prune );
 	} else {
 		$deleted_posts_count = delete_posts_wp( $post_ids_to_delete );
 	}
@@ -99,14 +101,17 @@ function delete_posts_wp( $post_ids ) {
  *
  * @return int number of deleted posts
  */
-function delete_posts_sql( $post_ids_to_delete, $keep_ids ) {
+function delete_posts_sql( $post_ids_to_delete, $keep_ids, $post_type_to_prune ) {
 	global $wpdb;
 	$keep_ids_as_string = implode( ",", $keep_ids );
 	$query = "delete {$wpdb->prefix}posts, {$wpdb->prefix}term_relationships, {$wpdb->prefix}postmeta from {$wpdb->prefix}posts left join {$wpdb->prefix}term_relationships ON ( {$wpdb->prefix}posts.ID = {$wpdb->prefix}term_relationships.object_id ) left join {$wpdb->prefix}postmeta ON ({$wpdb->prefix}posts.ID = {$wpdb->prefix}postmeta.post_id ) where ( {$wpdb->prefix}posts.ID not in ( $keep_ids_as_string) )";
+	if ( $post_type_to_prune ) {
+		$query .= " AND {$wpdb->prefix}posts.post_type = '" . sanitize_key( $post_type_to_prune) . "'";
+	}
 	if ( $wpdb->query( $query) > 0 ) {
 		\WP_CLI::line( "Posts deleted, progress = 100%");
 	}
 	return count( $post_ids_to_delete );
 }
 
-add_action( 'wp_hammer_run_prune_posts', __NAMESPACE__ . '\pruner', null, 2 );
+add_action( 'wp_hammer_run_prune_posts', __NAMESPACE__ . '\pruner', null, 3 );
