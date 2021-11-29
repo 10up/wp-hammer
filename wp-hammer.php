@@ -7,6 +7,8 @@
  * Author: Ivan Kruchkoff
  * License: MIT
  * License URI: https://opensource.org/licenses/MIT
+ * Update URI: https://github.com/10up/wp-hammer
+ * 
  */
 
 if ( ! defined('WP_CLI') || ! WP_CLI ) {
