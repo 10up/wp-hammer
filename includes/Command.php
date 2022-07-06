@@ -52,7 +52,12 @@ class Command extends \WP_CLI_Command {
 		// All content manipulators are stored in pruners, formatters, sanitizers, generators folders. They are namespaced, but not in classes,
 		// so we can't use the autoloader for them.
 		// Also, because they need add_action/add_filter to load, we can only include them after WP has loaded, so it's not part of the autoloader.
-		$content_manipulators = glob( __DIR__ . '/{pruners,formatters,sanitizers,generators}/*.php', GLOB_BRACE );
+		$content_manipulators = array_merge(
+			glob( __DIR__ . '/pruners/*.php' ),
+			glob( __DIR__ . '/formatters/*.php' ),
+			glob( __DIR__ . '/sanitizers/*.php' ),
+			glob( __DIR__ . '/generators/*.php' )
+		);
 
 		foreach ( $content_manipulators as $content_manipulator ) {
 			require_once $content_manipulator;
