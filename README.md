@@ -2,10 +2,13 @@
 
 > ``wp ha`` is a multi-tool. You can use it to clean your environment of personally identifiable information and extra content (posts and users) that are not necessary.
 
+> [!CAUTION]
+> WP Hammer has been archived and [WordPress Scrubber](https://github.com/10up/wp-scrubber) should be used as its replacement.
+
 [![Support Level](https://img.shields.io/badge/support-archived-red.svg)](#support-level) ![WordPress tested up to version](https://img.shields.io/badge/WordPress-v5.8%20tested-success.svg) [![MIT License](https://img.shields.io/github/license/10up/wp-hammer.svg)](https://github.com/10up/wp-hammer/blob/trunk/LICENSE.md)
 
-## WARNING
-__WARNING__ All changes are final and modify your site DB. Make sure you take a backup of your database __BEFORE__ you play around with the tool ``wp db export``
+> [!WARNING]
+> All changes are final and modify your site DB. Make sure you take a backup of your database __BEFORE__ you play around with the tool ``wp db export``
 
 ## Before You Begin
 Make a copy of your database.
